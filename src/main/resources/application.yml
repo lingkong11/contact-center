@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+
+app:
+  freeswitch:
+    default-context: public
+    default-gateway: sofia/gateway/mycarrier
+
