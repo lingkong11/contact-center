@@ -1,3 +1,68 @@
+## Call Center Demo (Spring Boot + FreeSWITCH xml_curl)
+
+### Run
+
+```bash
+mvn spring-boot:run
+```
+
+### REST: Manage inbound routes
+
+- Create route
+
+```bash
+curl -X POST http://localhost:8080/api/inbound-routes \
+  -H 'Content-Type: application/json' \
+  -d '{"didNumber":"1000","destinationType":"QUEUE","destinationValue":"support_queue"}'
+```
+
+- List routes
+
+```bash
+curl http://localhost:8080/api/inbound-routes
+```
+
+- Update route
+
+```bash
+curl -X PUT http://localhost:8080/api/inbound-routes/{id} \
+  -H 'Content-Type: application/json' \
+  -d '{"didNumber":"1000","destinationType":"USER","destinationValue":"1001"}'
+```
+
+- Delete route
+
+```bash
+curl -X DELETE http://localhost:8080/api/inbound-routes/{id}
+```
+
+### FreeSWITCH xml_curl
+
+In `autoload_configs/xml_curl.conf.xml`:
+
+```xml
+<configuration name="xml_curl.conf" description="xml curl config">
+  <bindings>
+    <binding name="dialplan" value="http://127.0.0.1:8080/freeswitch/xml"/>
+  </bindings>
+</configuration>
+```
+
+Ensure `modules.conf.xml` has:
+
+```xml
+<load module="mod_xml_curl"/>
+<load module="mod_callcenter"/>
+```
+
+Test inbound:
+
+```bash
+fs_cli -x 'originate sofia/internal/1000@your_fs_ip &park'
+```
+
+The service will answer and route based on the configured route.
+
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 # 云呼叫中心
